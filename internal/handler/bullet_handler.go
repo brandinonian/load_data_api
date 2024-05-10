@@ -59,7 +59,7 @@ func Delete_bullet(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"success": "bullet deleted"})
 }
 
-func Get_calibers(ctx *gin.Context) {
+func Get_all_calibers(ctx *gin.Context) {
 	cursor, err := database.Bullets.Find(ctx, bson.D{})
 
 	if err != nil {

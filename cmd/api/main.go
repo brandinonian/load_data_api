@@ -23,10 +23,14 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/bullets/calibers", handler.Get_calibers)
+	r.GET("/calibers", handler.Get_all_calibers)
 	r.GET("/bullets/:cal", handler.Get_bullets_by_cal)
 	r.POST("/bullets", handler.Add_bullet)
 	r.DELETE("/bullets/:id", handler.Delete_bullet)
+
+	r.GET("/cases", handler.Get_all_cases)
+	r.POST("/cases", handler.Add_case)
+	r.DELETE("/cases/:id", handler.Delete_case)
 
 	r.Run(":8080")
 }
