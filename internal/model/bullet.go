@@ -10,3 +10,11 @@ type Bullet struct {
 	Brand  string             `json:"brand" bson:"brand"`
 	Name   string             `json:"name" bson:"name"`
 }
+
+type CreateBulletRequest struct {
+	Cal    float32 `json:"cal" bson:"cal"`
+	Diam   float32 `json:"diam" bson:"diam"`
+	Weight float32 `json:"weight" bson:"weight"`
+	Brand  string  `json:"brand" bson:"brand"`
+	Name   string  `json:"name" bson:"name"`
+}
