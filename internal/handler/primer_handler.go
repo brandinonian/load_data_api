@@ -10,48 +10,48 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Get_all_cases(ctx *gin.Context) {
-	cursor, err := database.Cases.Find(ctx, bson.D{})
+func Get_all_primers(ctx *gin.Context) {
+	cursor, err := database.Primers.Find(ctx, bson.D{})
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var cases []model.Case
-	if err := cursor.All(ctx, &cases); err != nil {
+	var primers []model.Primer
+	if err := cursor.All(ctx, &primers); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, cases)
+	ctx.JSON(http.StatusOK, primers)
 }
 
-func Add_case(ctx *gin.Context) {
-	var body model.CreateCaseRequest
+func Add_primer(ctx *gin.Context) {
+	var body model.CreatePrimerRequest
 
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	res, err := database.Cases.InsertOne(ctx, body)
+	res, err := database.Primers.InsertOne(ctx, body)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "unable to add case"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "unable to add primer"})
 		return
 	}
 
-	casing := model.Case{
-		Id:        res.InsertedID.(primitive.ObjectID),
-		Cartridge: body.Cartridge,
-		Brand:     body.Brand,
-		Length:    body.Length,
+	primer := model.Primer{
+		Id:    res.InsertedID.(primitive.ObjectID),
+		Brand: body.Brand,
+		Name:  body.Name,
+		Type:  body.Type,
 	}
 
-	ctx.JSON(http.StatusCreated, casing)
+	ctx.JSON(http.StatusCreated, primer)
 }
 
-func Delete_case(ctx *gin.Context) {
+func Delete_primer(ctx *gin.Context) {
 	id := ctx.Param("id")
 
 	_id, err := primitive.ObjectIDFromHex(id)
@@ -60,10 +60,10 @@ func Delete_case(ctx *gin.Context) {
 		return
 	}
 
-	res, err := database.Cases.DeleteOne(ctx, bson.M{"_id": _id})
+	res, err := database.Primers.DeleteOne(ctx, bson.M{"_id": _id})
 
 	if res.DeletedCount == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "case not found"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "primer not found"})
 		return
 	}
 
@@ -71,5 +71,5 @@ func Delete_case(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "case deleted"})
+	ctx.JSON(http.StatusOK, gin.H{"success": "primer deleted"})
 }

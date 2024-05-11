@@ -10,48 +10,47 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Get_all_cases(ctx *gin.Context) {
-	cursor, err := database.Cases.Find(ctx, bson.D{})
+func Get_all_powders(ctx *gin.Context) {
+	cursor, err := database.Powders.Find(ctx, bson.D{})
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	var cases []model.Case
-	if err := cursor.All(ctx, &cases); err != nil {
+	var powders []model.Powder
+	if err := cursor.All(ctx, &powders); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, cases)
+	ctx.JSON(http.StatusOK, powders)
 }
 
-func Add_case(ctx *gin.Context) {
-	var body model.CreateCaseRequest
+func Add_powder(ctx *gin.Context) {
+	var body model.CreatePowderRequest
 
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	res, err := database.Cases.InsertOne(ctx, body)
+	res, err := database.Powders.InsertOne(ctx, body)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "unable to add case"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "unable to add powder"})
 		return
 	}
 
-	casing := model.Case{
-		Id:        res.InsertedID.(primitive.ObjectID),
-		Cartridge: body.Cartridge,
-		Brand:     body.Brand,
-		Length:    body.Length,
+	powder := model.Powder{
+		Id:    res.InsertedID.(primitive.ObjectID),
+		Brand: body.Brand,
+		Name:  body.Name,
 	}
 
-	ctx.JSON(http.StatusCreated, casing)
+	ctx.JSON(http.StatusCreated, powder)
 }
 
-func Delete_case(ctx *gin.Context) {
+func Delete_powder(ctx *gin.Context) {
 	id := ctx.Param("id")
 
 	_id, err := primitive.ObjectIDFromHex(id)
@@ -60,10 +59,10 @@ func Delete_case(ctx *gin.Context) {
 		return
 	}
 
-	res, err := database.Cases.DeleteOne(ctx, bson.M{"_id": _id})
+	res, err := database.Powders.DeleteOne(ctx, bson.M{"_id": _id})
 
 	if res.DeletedCount == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "case not found"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "powder not found"})
 		return
 	}
 
@@ -71,5 +70,5 @@ func Delete_case(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "case deleted"})
+	ctx.JSON(http.StatusOK, gin.H{"success": "powder deleted"})
 }

@@ -8,3 +8,9 @@ type Primer struct {
 	Name  string             `json:"name" bson:"name"`
 	Type  string             `json:"type" bson:"type"`
 }
+
+type CreatePrimerRequest struct {
+	Brand string `json:"brand" bson:"brand"`
+	Name  string `json:"name" bson:"name"`
+	Type  string `json:"type" bson:"type"`
+}

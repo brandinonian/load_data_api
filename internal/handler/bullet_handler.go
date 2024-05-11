@@ -10,6 +10,46 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// step 1
+// use this endpoint to narrow down the bullet search
+func Get_all_calibers(ctx *gin.Context) {
+	cursor, err := database.Bullets.Find(ctx, bson.D{})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var calibers []model.Bullet
+	if err := cursor.All(ctx, &calibers); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, calibers)
+}
+
+// step 2
+// use a caliber from above here
+func Get_bullets_by_cal(ctx *gin.Context) {
+	caliber := ctx.Param("caliber")
+
+	cursor, err := database.Bullets.Find(ctx, bson.M{"caliber": caliber})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var bullets []model.Bullet
+	if err := cursor.All(ctx, &bullets); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, bullets)
+}
+
 func Add_bullet(ctx *gin.Context) {
 	var body model.CreateBulletRequest
 
@@ -20,7 +60,7 @@ func Add_bullet(ctx *gin.Context) {
 
 	res, err := database.Bullets.InsertOne(ctx, body)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "unable to add exercise"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "unable to add bullet"})
 		return
 	}
 
@@ -57,40 +97,4 @@ func Delete_bullet(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"success": "bullet deleted"})
-}
-
-func Get_all_calibers(ctx *gin.Context) {
-	cursor, err := database.Bullets.Find(ctx, bson.D{})
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	var calibers []model.Bullet
-	if err := cursor.All(ctx, &calibers); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, calibers)
-}
-
-func Get_bullets_by_cal(ctx *gin.Context) {
-	caliber := ctx.Param("caliber")
-
-	cursor, err := database.Bullets.Find(ctx, bson.M{"caliber": caliber})
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	var bullets []model.Bullet
-	if err := cursor.All(ctx, &bullets); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, bullets)
 }

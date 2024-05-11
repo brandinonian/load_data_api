@@ -7,3 +7,8 @@ type Powder struct {
 	Brand string             `json:"brand" bson:"brand"`
 	Name  string             `json:"name" bson:"name"`
 }
+
+type CreatePowderRequest struct {
+	Brand string `json:"brand" bson:"brand"`
+	Name  string `json:"name" bson:"name"`
+}
