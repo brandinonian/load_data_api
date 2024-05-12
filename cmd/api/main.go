@@ -32,5 +32,13 @@ func main() {
 	r.POST("/cases", handler.Add_case)
 	r.DELETE("/cases/:id", handler.Delete_case)
 
+	r.GET("/powders", handler.Get_all_powders)
+	r.POST("/powders", handler.Add_powder)
+	r.DELETE("/powders/:id", handler.Delete_powder)
+
+	r.GET("/primers", handler.Get_all_primers)
+	r.POST("/primers", handler.Add_primer)
+	r.DELETE("/primers/:id", handler.Delete_primer)
+
 	r.Run(":8080")
 }

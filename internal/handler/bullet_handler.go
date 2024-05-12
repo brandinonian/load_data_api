@@ -13,15 +13,9 @@ import (
 // step 1
 // use this endpoint to narrow down the bullet search
 func Get_all_calibers(ctx *gin.Context) {
-	cursor, err := database.Bullets.Find(ctx, bson.D{})
+	calibers, err := database.Bullets.Distinct(ctx, "cal", bson.D{})
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	var calibers []model.Bullet
-	if err := cursor.All(ctx, &calibers); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -32,9 +26,9 @@ func Get_all_calibers(ctx *gin.Context) {
 // step 2
 // use a caliber from above here
 func Get_bullets_by_cal(ctx *gin.Context) {
-	caliber := ctx.Param("caliber")
+	caliber := ctx.Param("cal")
 
-	cursor, err := database.Bullets.Find(ctx, bson.M{"caliber": caliber})
+	cursor, err := database.Bullets.Find(ctx, bson.M{"cal": caliber})
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
