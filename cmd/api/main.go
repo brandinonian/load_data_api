@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	if err := database.Init("exercise"); err != nil {
+	if err := database.Init("load_data"); err != nil {
 		fmt.Println(err)
 	}
 
@@ -25,6 +25,7 @@ func main() {
 
 	r.GET("/calibers", handler.Get_all_calibers)
 	r.GET("/bullets/:cal", handler.Get_bullets_by_cal)
+	r.GET("/bullets/id/:id", handler.Get_bullet_by_id)
 	r.POST("/bullets", handler.Add_bullet)
 	r.DELETE("/bullets/:id", handler.Delete_bullet)
 

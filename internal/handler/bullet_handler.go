@@ -44,6 +44,19 @@ func Get_bullets_by_cal(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, bullets)
 }
 
+func Get_bullet_by_id(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	bullet := database.Bullets.FindOne(ctx, bson.M{"_id": id})
+
+	if bullet == nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Bullet not found"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, bullet)
+}
+
 func Add_bullet(ctx *gin.Context) {
 	var body model.CreateBulletRequest
 
