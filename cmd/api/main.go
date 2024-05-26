@@ -27,7 +27,7 @@ func main() {
 	r.GET("/bullets/:cal", handler.Get_bullets_by_cal)
 	r.GET("/bullets/id/:id", handler.Get_bullet_by_id)
 	r.POST("/bullets", handler.Add_bullet)
-	r.DELETE("/bullets/:id", handler.Delete_bullet)
+	r.DELETE("/bullets/id/:id", handler.Delete_bullet)
 
 	r.GET("/cases", handler.Get_all_cases)
 	r.POST("/cases", handler.Add_case)

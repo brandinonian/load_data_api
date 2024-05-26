@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // step 1
@@ -45,13 +46,20 @@ func Get_bullets_by_cal(ctx *gin.Context) {
 }
 
 func Get_bullet_by_id(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	bullet := database.Bullets.FindOne(ctx, bson.M{"_id": id})
-
-	if bullet == nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "Bullet not found"})
+	id, err := primitive.ObjectIDFromHex(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	filter := bson.D{{"_id", id}}
+	var bullet model.Bullet
+
+	if err := database.Bullets.FindOne(ctx, filter).Decode(&bullet); err != nil {
+		if err == mongo.ErrNoDocuments {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	ctx.JSON(http.StatusOK, bullet)
