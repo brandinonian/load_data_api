@@ -52,7 +52,7 @@ func Get_bullet_by_id(ctx *gin.Context) {
 		return
 	}
 
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{{Key: "_id", Value: id}}
 	var bullet model.Bullet
 
 	if err := database.Bullets.FindOne(ctx, filter).Decode(&bullet); err != nil {
